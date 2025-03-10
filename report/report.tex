@@ -7,8 +7,6 @@
 \usepackage{algorithm} % For algorithms
 \usepackage{algpseudocode}
 
-\newcommand{\N}{\mathcal{N}}
-
 %\setlength{\marginparwidth}{2.5cm}
 \bibliographystyle{apsrev4-1}
 \begin{document}
@@ -24,41 +22,43 @@
 \date{\today} % Leave empty to omit a date
 
 \begin{abstract}
-    abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract 
+    We explore the Minority Game, a repeated binary prediction game introduced by Challet and Zhang which exhibits emergent behaviors revolving around the idea of self-organization. After an overview of the game and its dynamics, we empirically study its volatility and predictability under various configurations, highlighting the existence of a phase transition between two distinct regimes. Finally, we recast the Minority Game in the context of financial markets and discuss the implications of our findings in this context. In particular, we argue that financial markets exhibit self-organized criticality and thus operate at the edge of efficiency.
 \end{abstract}
 
 
 \maketitle
 
+This paper is organized into four sections. In Section \ref{sec:introduction}, we first introduce the El Farol Bar problem and then move on to the Minority Game, which is motivated by the former. In Section \ref{sec:presentation}, we present the theoretical framework of the Minority Game and then derive its dynamics. In Section \ref{sec:self-organization}, we study the two key emergent behaviors of the system: volatility and predictability. Finally, in Section \ref{sec:financial-markets}, we link the Minority Game to financial markets and recast our findings in this context.
+
 
 \section{Introduction}
 \label{sec:introduction}
 
-\subsection{El Farol Bar Problem}
-A key concept in the minority game is \textit{inductive thinking}, which can be roughly described as the ability to learn from the past to make inferences about the future. It is very different from \textit{deductive thinking}, which amounts to applying a predefined set of rules to a given situation. A good introduction to inductive thinking is the \textit{El Farol Bar Problem} \cite{Arthur_1994}, which we present in this section.
+\subsection{El Farol Bar problem}
+A key concept in strategic decision-making is \textit{inductive thinking}, which can be roughly described as the ability to learn from the past to make inferences about the future. It is very different from \textit{deductive thinking}, which amounts to applying a predefined set of rules to a given situation. A classic game-theoretic introduction to inductive thinking for decision-making is Brian Arthur's \textit{El Farol Bar problem} \cite{Arthur_1994}, which we present in this section.
 
-The problem is simple: every Thursday, 100 people consider visiting the El Farol Bar, but the venue is enjoyable only if attendance stays below 60. If too many go, the bar is overcrowded; if too few go, those who stayed home may regret missing out. Without direct communication, individuals must predict attendance based on past data. If their forecast suggests a crowded bar, they stay home; otherwise, they go. Every night, individuals make their decision independently, and the bar's attendance fluctuates based on their choices.
+The problem is simple: every Thursday, 100 people consider visiting the El Farol Bar, but the venue is enjoyable only if attendance stays below 50. If too many go, the bar is overcrowded; if too few go, those who stayed home may regret missing out. Without direct communication, individuals must predict attendance based on past data. If their forecast suggests a crowded bar, they stay home; otherwise, they go. Every night, individuals make their decision independently, and the bar's attendance fluctuates based on their choices.
 
-To win this game, one needs to be in the minority. Crucially, there is no single optimal strategy since the best decision depends on the decisions of others. This is a key feature of the game: agents must adapt to the behavior of others, leading to complex dynamics. The game is played repeatedly, and agents can learn from past experiences to improve their predictions.
+To win this game, one needs to be in the \textit{minority}. Crucially, there is no single optimal strategy since the best decision depends on the decisions of others. This is a key feature of the game: agents must adapt to the behavior of others, leading to complex dynamics. The game is played repeatedly, and agents can learn from past experiences to improve their predictions.
 
-To simulate this game using agent-based modelling, Arthur proposed that each agent uses a fixed set of simple forecasting rules (e.g. assuming attendance will be the same as last week or averaging past values). Over time, agents favor rules that perform well, adjusting their choices accordingly. Remarkably, Arthur's simulations showed that \textit{attendance naturally fluctuates around the optimal level of 60}, despite the absence of central coordination. This \textit{self-organizing} behavior emerges from agents adapting to each other’s strategies.
+To simulate this game using agent-based modelling, Arthur proposed that each agent uses a fixed set of simple forecasting rules (e.g. assuming attendance will be the same as last week or averaging past values). Over time, agents favor rules that perform well, adjusting their choices accordingly. Remarkably, Arthur's simulations showed that attendance naturally fluctuates around the optimal level of 50, despite the absence of central coordination. This \textit{self-organizing} behavior emerges from agents adapting to each other’s strategies through inductive thinking, without explicit communication or coordination.
 
-There is more to be said about the El Farol Bar Problem, but we will not go into details here. The key result is that inductive thinking can lead to self-organization. We will now pass to the \textit{Minority Game}, which is a generalization of the El Farol Bar Problem that is more amenable to mathematical analysis.
+There is more to be said about the El Farol Bar problem, but we will not go into details here. The key result is that \textit{inductive thinking can lead to self-organization}.
 
 
 \subsection{The Minority Game}
 
-The El Farol Bar Problem directly inspired the Minority Game, a simple model introduced by Challet and Zhang \cite{Challet_1997} to study self-organization in a binary game.
+The El Farol Bar problem directly inspired the Minority Game, a simple model introduced by Challet and Zhang \cite{Challet_1997} to study self-organization in a repeated binary prediction game.
 
-In the Minority Game, an odd number of agents repeatedly choose between two options (e.g., A or B, buy or sell, go or stay, etc.) The goal is to be in the minority group\footnote{There is always a strict minority since the number of agents is odd.}. The game is played in identical rounds, and each agent has a fixed individual set of strategies to choose from. These strategies can be thought of as simple rules or heuristics that guide the agents' decisions based on past outcomes. At the end of each round, the agents receive a reward or penalty based on their choices. The agents in the minority (those who chose the less popular option) are rewarded, while those in the majority (those who chose the more popular option) are penalized.
+In the Minority Game, an odd number of agents repeatedly choose between two options (e.g., A or B, buy or sell, go or stay, etc.) The goal is to be in the minority group\footnote{There is always a strict minority since the number of agents is odd.}. The game is played in identical rounds, and each agent has a fixed individual set of strategies to choose from. These strategies can be thought of as simple rules or heuristics that guide the agents' decisions based on past outcomes. At the end of each round, the agents in the minority (i.e. those who chose the less popular option) are the winners, while those in the majority (i.e. those who chose the more popular option) are the losers. At the end of each round, all agents update their \textit{all} of their strategies based on the outcome of the round, regardless of which strategy they actually played\footnote{As we will see in the last section, rewarding strategies even though they weren't actually played amounts to neglecting one's impact on the aggregate outcome.}.
 
-Just like the El Farol bar problem, this is a negative sum game since by definition only the minority wins at each round. Ideally, agents would coordinate so that the minority is a large as it can be (i.e. half the population). And indeed computer simulations show that the game naturally self-organizes to a state where the number of agents in the minority is close to half the population.
+Just like the El Farol bar problem, this is a \textit{negative sum game} since by definition only the minority wins at each round. Ideally, agents would coordinate so that the minority is a large as it can be (i.e. half the population). And indeed computer simulations show that the game naturally \textit{self-organizes} to a state where the number of agents in the minority is close to half the population, though with fluctuations around this value.
 
 
 \section{Presentation of the system}
 \label{sec:presentation}
 
-We now formally introduce the model. We first recall the mathematical framework of the Minority Game, and then we present the dynamics of the system. We will go quickly, and for more details we refer the reader to the original paper by Challet and Zhang \cite{Challet_1997}.
+We now formally introduce the model. We first review the mathematical framework of the Minority Game before deriving its dynamics. This is only a brief presentation,, and for more details we refer the reader to the original paper by Challet and Zhang \cite{Challet_1997}.
 
 \subsection{Theoretical framework}
 
@@ -69,16 +69,16 @@ Throughout the rest of the paper, we will use the following notations:
     \item $M$: memory length of each
     \item $s_i(t)$: strategy of agent $i$ at time $t$
     \item $S_i$: set of strategies of agent $i$
-    \item $a_i(t) = \pm 1$: action of agent $i$ at time $t$
-    \item $A(t) = \sum_{i=1}^N a_i(t)$: aggregate movement of the population at time $t$, also called "attendance", in analogy with the El Farol Bar Problem
-    \item $a(t) = \pm 1$: action of the population at time $t$, defined as $a(t) = \text{sign}(A(t))$
+    \item $a_i(t)$: action of agent $i$ at time $t$
+    \item $A(t) = \sum_{i=1}^N a_i(t)$: aggregate movement of the population at time $t$, also called \textit{attendance} in analogy with the El Farol Bar problem
+    \item $a(t)$: action of the population at time $t$, defined as $a(t) = \text{sign}A(t)$
 \end{itemize}
 
-The game has $N$ agents, each with memory length $M$. The game's history is represented by binary string $H$ which is initially a $M$-long string of random bits and to which we append at the end of each step a "0" bit (resp. a "1" bit) when the action $a(t)$ is $-1$ (resp. $+1$).
+The game has $N$ agents, each with memory length $M$. The game's history is represented by binary string $H$ which is initialized as a $M$-long string of random bits and to which we append a \texttt{0} bit (resp. \texttt{1}) when the action $a(t)$ is $-1$ (resp. $+1$) at the end of round $t$.
 
-At a given time $t$, agents base their action $a_i(t)$ on the last $M$ values in the game's history, i.e. on the state $\mu(t) = (H[t-M], \ldots, H[t-1])$. The state $\mu(t)$ is a binary string of length $M$ that encodes the last $M$ actions of the population. Each agent has a set of $S$ strategies, which are mappings $\{0, 1\}^M \to \{-1, +1\}$ that determine the agent's action based on the current state $\mu(t)$.
+At a given time $t$, agents base their action $a_i(t)$ on the last $M$ values in the game's history, i.e. on the \textit{state} $\mu(t) = (H[t-M], \ldots, H[t-1])$, which is a binary string of length $M$ that encodes the last $M$ actions of the population. Each agent has a set of $S$ strategies, which are mappings $\{0, 1\}^M \to \{-1, +1\}$ that determine the agent's action based on the current state $\mu(t) \ in \{0, 1\}^M$. The strategies are fixed and do not change over time. Each agent's individual set of strategies is denoted $S_i$.
 
-At each turn $t$, each agent $i$ picks amongs its strategies $S_i$ the strategy $s_i(t)$ which has been the fittest so far, choosing randomly in case of a tie. The fitness of a strategy is defined as the number of times it has been in the minority so far, i.e. the number of times $F_s(t) = \sum_{t' < t} \mathbf{1}_{s(\mu(t')) = -a(t')}$. The agent then plays the action $a_i(t) = s_i(t)(\mu(t))$. Once all agents have picked their action\footnote{Note that the order of play is irrelevant since the attendance is the same regardless of the order.}, the population's action is computed as $a(t) = \text{sign}A(t)$. Finally, each player updates the fitness of all its strategies, as if it had played all of them\footnote{In some variants of the Minority Game, agents take into account their impact by giving an extra fitness reward to the strategy which they actually played. Interestingly, accounting for self-impact in this simple way removes many of the emergent phenomena of the game.}. Finally, the history is updated by appending the action of the population $a(t)$ to the history $H$.
+At each turn $t$, each agent $i$ picks amongs its strategies $S_i$ the strategy $s_i(t)$ which has been the fittest so far, choosing randomly in case of a tie. The fitness of a strategy $s$ is defined as the number of times it has been in the minority so far, i.e. $F_s(t) = \sum_{t' < t} \mathbf{1}_{s(\mu(t')) = -a(t')}$. The agent then plays the action $a_i(t) = s_i(t)(\mu(t))$. Once all agents have picked their action\footnote{Note that the order of play is irrelevant since the attendance is the same regardless of the order.}, the population's action is computed as $a(t) = \text{sign}A(t)$. Finally, each player updates the fitness of all its strategies, as if it had played all of them\footnote{In some variants of the Minority Game, agents take into account their impact by giving an extra fitness reward to the strategy which they actually played. Interestingly, accounting for self-impact in this simple way removes many of the emergent phenomena of the game.}. Finally, the history is updated by appending the action of the population $a(t)$ to the history $H$.
 
 The above set of rules can be summarized by the following algorithm:
 \begin{algorithm}
@@ -93,7 +93,7 @@ The above set of rules can be summarized by the following algorithm:
                 \State $a_i(t) = s_i(t)(\mu(t))$
             \EndFor
             \State $A(t) = \sum_{i=1}^N a_i(t)$
-            \State $a(t) = \text{sign}(A(t))$
+            \State $a(t) = \text{sign}A(t)$
             \For{$i = 1$ to $N$}
                 \For{$s \in S_i$}
                     \State $F_s(t+1) = F_s(t) + \mathbf{1}_ {s(\mu(t)) = -a(t)}$
@@ -106,13 +106,13 @@ The above set of rules can be summarized by the following algorithm:
 
 
 \subsection{Dynamics}
-For the sake of simplicity and like many authors \cite{Challet_1997}, we will assume that $S=2$ i.e. agents only have two strategies, which we will denote $s_{i,+}$ and $s_{i,-}$ for convenience. We then introduce the following useful notations:
+For the sake of simplicity and like many authors \cite{Challet_1997}, we will assume that $S=2$ i.e. agents only have two strategies, which we will denote $s_{i,+}$ and $s_{i,-}$ for convenience. Note that doing so does not change the qualitative behavior of the system, but it does simplify the notations and alleviates the computations. Accordingly, we introduce the following useful notations:
 \begin{itemize}
     \item $D_i(t) = \frac{1}{2}\big(F_{s_{i,+}}(t) - F_{s_{i,-}}(t)\big)$: difference of fitness between the two strategies of agent $i$ at time $t$
-    \item $a_{i,+}^\mu = a_{i,+}^\mu = \pm 1$: action of agent $i$ when playing strategy $s_{i,+}$ and the game's state is $\mu$. We define $a_{i,-}^\mu$ similarly.
+    \item $a_{i,+}^\mu$: action of agent $i$ when playing strategy $s_{i,+}$ and the game's state is $\mu$. We define $a_{i,-}^\mu$ similarly.
     \item $\omega_i^\mu = \frac{1}{2}\big(a_{i,+}^\mu + a_{i,-}^\mu\big)$
     \item $\xi_i^\mu = \frac{1}{2}\big(a_{i,+}^\mu - a_{i,-}^\mu\big)$
-    \item $\Omega^\mu = \frac{1}{N} \sum_{i=1}^N \omega_i^\mu$: average of $\omega_i^\mu$ over the population. Can be thought of as the polarization of the system in state $\mu$.
+    \item $\Omega^\mu = \sum_{i=1}^N \omega_i^\mu$: can be thought of as the polarization of the system in state $\mu$.
 \end{itemize}
 
 Using those notations, the strategy ($s_{i,+}$ or $s_{i,-}$) played by agent $i$ at time $t$ is given by the sign of $D_i(t)$, i.e.
@@ -124,7 +124,7 @@ Consequently, the action of agent $i$ at time $t$ is given by:
 \begin{equation}
     a_i(t) = a_{i,s_i(t)}^{\mu(t)} = \omega_i^{\mu(t)} + s_i(t) \xi_i^{\mu(t)}
 \end{equation}
-From which we can deduce the attendance:
+From which we can rewrite the attendance:
 \begin{equation}
     A(t) = \Omega^{\mu(t)} + \sum_{i=1}^N s_i(t) \xi_i^{\mu(t)}
 \end{equation}
@@ -138,28 +138,29 @@ Combining \eqref{eq:strategy} and \eqref{eq:difference}, we can see that the dyn
 \label{eq:dynamics}
     D_i(t+1) = D_i(t) - \xi_i^{\mu(t)} \textnormal{sign }\bigg(\Omega^{\mu(t)} + \sum_{j=1}^N s_j(t) \xi_j^{\mu(t)}\bigg)
 \end{equation}
+These equations are sufficient to simulate the dynamics of the Minority Game. We will now move on to study the emergent behaviors of the system, which is the main focus of this paper.
 
 
 \section{Self-organization}
 \label{sec:self-organization}
 
-Now that we have presented the dynamics of the Minority Game, we can study its emergent behaviors. The two quantities of interest will be the \textit{volatility} and the \textit{predictability} of the system. The volatility measures how well the system self-organizes, while the predictability measures how well agents can predict the attendance. We will show that the two quantities are related and that they both depend on the parameter $\alpha = \frac{2^M}{N}$, with a critical value $\alpha_c \simeq 0.34$ which separates the regimes.
+Now that we have presented the dynamics of the Minority Game, we can study its emergent behaviors. The two quantities of interest will be the \textit{volatility} and the \textit{predictability} of the system. The volatility measures how well the system self-organizes, while the predictability measures how well agents can predict the attendance. We will show that the two quantities are related and that they both depend on the parameter $\alpha = \frac{2^M}{N}$, with a critical value $\alpha_c \simeq 0.34$ which separates two distinct regimes.
 
 \subsection{Volatility}
 
-We have already said that the game self-organizes to a state where the number of agents in the minority is close to half the population. In other words, after a while the attendance will naturally tend to fluctuate around $0$: $A(t \gg 1) \simeq 0$. We're interested in the magnitude of the oscillations around $0$ since they essentially measure how well the system self-organizes. In other words, we want to measure the volatility of the system $\sigma^2 = \langle A^2(t) \rangle$ where $\langle \cdot \rangle$ denotes the average over time.
+We have already said that the game self-organizes to a state where the number of agents in the minority is close to half the population. In other words, after a while the attendance will naturally tend to fluctuate around zero: $A(t) \simeq_{t \gg 1} 0$. We are interested in the amplitude of the oscillations around zero since they essentially measure how well the system self-organizes. In other words, we want to measure the volatility of the system $\sigma^2 = \langle A^2(t) \rangle$ where $\langle \cdot \rangle$ denotes the average over time.
 
-To begin with, note that for fully random agents (i.e. agents flipping coins at each step to decide their action), we have $a_i(t) \sim U(\{-1, +1\}) \ i.i.d.$ with mean $0$ and variance $1$ such that in virtue of the central limit theorem:
+To begin with, note that for fully random agents (i.e. agents flipping coins at each step to decide their action), we have $a_i(t) \sim U(\{-1, +1\}) \ i.i.d.$ with mean $0$ and variance $1$ such that by virtue of the central limit theorem:
 \begin{equation}
-    \frac{\langle A^2(t) \rangle}{N} \xrightarrow[N \to \infty]{\mathcal{L}} \N(0, 1)
+    \frac{\langle A(t) \rangle}{\sqrt{N}} \xrightarrow[N \to \infty]{\mathcal{L}} \mathcal{N}(0, 1)
 \end{equation}
-In other words, a population of agents which do not try to predict the attendance will results in oscillation of order $\sqrt{N}$ around $0$. We can interpret this as the \textit{baseline volatility} of the system. In the Minority Game however, agents aren't random since they have a set of strategies which are used to try to predict the attendance. It is thus natural to wonder whether agents' inductive thinking can lead to a lower volatility than the baseline volatility. In other words: can the system self-organize to a state where the attendance is more stable than in the random case?
+In other words, a population of agents which do not try to predict the attendance will results in oscillation of order $\sqrt{N}$ around zero. We can interpret this as the \textit{baseline volatility} of the system. In the Minority Game however, agents aren't random since they have a set of strategies which are used to try to predict the attendance. It is thus natural to wonder whether agents' inductive thinking can lead to a lower volatility than the baseline volatility. In other words: can the system self-organize to a state where the attendance is more stable than in the random case?
 
-Solving the Minority Game analytically is a hard problem which requires advanced tools and as such we won't cover it here. Instead, we will perform extensive numerical simulations of the system to study its emergent behaviors. The only two parameters we will modify are the number of agents $N$ and the memory length $M$. They are in fact the only relevant parameters to study the macroscopic properties of the Minority Game. More precisely, the ratio $\alpha = \frac{2^M}{N}$ is the one parameter we will focus on the most. Intuitively, $\alpha$ measures the \textit{relative size} of the strategy space and the population. When $\alpha$ is small, the population is large compared to the strategy space, and agents' strategies are likely to be correlated. On the contrary, when $\alpha$ is large we expect agents to be more independent.\footnote{Note that the strategy space is $2^M$ even though there are $2^{2^M}$ possible strategies. This is because a strategy $s:\{0, 1\}^M \to \{\pm 1\}$ can be seen as a vector of dimension $d=2^M$, and thus there can be at most $2^M$ mutually orthogonal strategies. Thus the effective strategy space is $2^M$.}
+Solving the Minority Game analytically is a hard problem which requires advanced tools and as such we won't cover it here. Instead, we will perform extensive numerical simulations of the system to study its emergent behaviors. The only two parameters we will modify are the number of agents $N$ and the memory length $M$. They are in fact the only relevant parameters to study the macroscopic properties of the Minority Game. More precisely, the ratio $\alpha = \frac{2^M}{N}$ is the one parameter we will focus on. Intuitively, $\alpha$ measures the \textit{relative size} of the strategy space versus the agent population. When $\alpha$ is small, the population is large compared to the strategy space, and agents' strategies are likely to be correlated. On the contrary, when $\alpha$ is large we expect agents to be more independent.\footnote{Note that the strategy space is $2^M$ even though there are $2^{2^M}$ possible strategies. This is because a strategy $s:\{0, 1\}^M \to \{\pm 1\}$ can be seen as a vector of dimension $d=2^M$, so that there can be at most $2^M$ mutually orthogonal strategies. Thus the effective strategy space is $2^M$.}
 
-To simulate the Minority Game, we will use the \texttt{mesa} Python library which is a simple agent-based modeling framework. Like in the previous section, we let $S=2$ as it alleviates computations without changing the qualitative behavior of the system. For each couple $(N, M)$, we run $n=10$ independent simulations, each with $T=10^4$ steps. All results are averaged over these $n$ simulations to reduce noise.
+To simulate the Minority Game, we will use the \texttt{mesa} Python library which is a simple agent-based modeling framework. For each couple $(N, M)$ we run $n=10$ independent simulations, each for $T=10^4$ steps. All results are averaged over these $n$ simulations to reduce noise.
 
-In Figures \ref{fig:dynamics1}, \ref{fig:dynamics2} and \ref{fig:dynamics3}, we plot the dynamics of the system for different configurations $(N,M)$ leading to different values of $\alpha$. For each Figure, the top panel shows the rescaled attendance $A(t) / \sqrt{N}$ over time overlapped with the rolling volatility $\langle A^2(t) \rangle / N$, while the bottom panel plots the rolling volatility alongside the overall average volatility and the baseline volatility $\sigma^2 = N$. We chose a rolling window of size $L=100$ to compute the volatility.
+In Figures \ref{fig:dynamics1}, \ref{fig:dynamics2} and \ref{fig:dynamics3}, we plot the dynamics of the system for different configurations $(N,M)$ leading to different values of $\alpha$. For each figure, the top panel shows the rescaled attendance $A(t) / \sqrt{N}$ over time overlapped with the rolling volatility $\langle A^2(t) \rangle / N$, while the bottom panel plots the rolling volatility alongside the overall average volatility and the baseline volatility $\sigma^2 = N$. We use a rolling window of size $L=100$ to compute the volatility.
 \begin{itemize}
     \item In Figure \ref{fig:dynamics1}, we have $\alpha \simeq \alpha_c$ and we can see that the fluctuations' amplitude diminishes over time before stabilizing around $0.4$, which is notably lower than the baseline volatility. This is an evidence of self-organization.
     \item In Figure \ref{fig:dynamics2}, we have $\alpha \ll \alpha_c$ and we can see that the attendance exhibits volatility clustering. In particular, the overall average volatility is around $4$, which is significantly larger than the baseline volatility. This indicates that the system failed to self-organize.
@@ -187,13 +188,13 @@ In Figures \ref{fig:dynamics1}, \ref{fig:dynamics2} and \ref{fig:dynamics3}, we 
     \label{fig:dynamics3}
 \end{figure}
 
-Clearly, different values of $\alpha$ lead to different behaviors of the volatility of the system. To better understand the relationship between $\alpha$ and the volatility, we plot the long-term volatility of the system $\sigma^2/N$ as a function of $\alpha$ in log-log scale in Figure \ref{fig:volatility}. We can see that the system self-organizes to reduce the volatility whenever $\alpha \simeq \alpha_c$. On the contrary, when $\alpha \ll \alpha_c$, the system fails to self-organize and the volatility greatly increases to around $4$ times the baseline volatility. Finally, when $\alpha \gg \alpha_c$, the system is still failing to self-organize, but the volatility is not worse than the baseline volatility.
+Clearly, different values of $\alpha$ lead to dramatically different behaviors of the volatility of the system. To better understand the relationship between $\alpha$ and the volatility, we plot the long-term volatility of the system $\sigma^2/N$ as a function of $\alpha$ in log-log scale in Figure \ref{fig:volatility}. We can see that the system self-organizes to reduce the volatility whenever $\alpha \simeq \alpha_c$. On the contrary, when $\alpha \ll \alpha_c$, the system fails to self-organize and the volatility greatly increases to around four times the baseline volatility. Finally, when $\alpha \gg \alpha_c$, the system is still failing to self-organize, but the volatility is not worse than the baseline volatility.
 
-In hindsight, these results seem logical:
+In hindsight, these results can be understood as follows:
 \begin{itemize}
-    \item When $\alpha \ll \alpha_c$, the population is large compared to the strategy space and we expect agents' strategies to be correlated. This correlation between agents can be thought of as a \textit{herding effect}, which explains the excess volatility and the volatility clustering.
-    \item When $\alpha \gg \alpha_c$, the population is small compared to the strategy space and as such agents' strategies are likely to be uncorrelated. Thus we escape the herding effect, but now agents are so independent that they are almost like independent agents flipping coins, which is the baseline. That explains why the volatility is about the same as the baseline volatility. It is still a bit inferior because agents can coordinate a little bit.
-    \item When $\alpha \simeq \alpha_c$, the population is about the same size as the strategy space and thus agents' strategies are correlated enough so that they can self-organize, but not so much that herding effects dominate. This is the sweet spot where the system self-organizes to reduce the volatility.
+    \item When $\alpha \ll \alpha_c$, the population is large compared to the strategy space, so we expect agents' strategies to be correlated. This correlation between agents can be thought of as a \textit{herding effect}, which explains the excess volatility and the volatility clustering.
+    \item When $\alpha \gg \alpha_c$, the population is small compared to the strategy space and as such agents' strategies are likely to be uncorrelated. We escape the herding effect, but agents are now so independent that they essentially behave like \textit{random agents} flipping coins. That explains why the volatility is about the same as the baseline volatility; note that it is slightly inferior since agents aren't completely independent so they can somewhat coordinate.
+    \item When $\alpha \simeq \alpha_c$, the population is about the same size as the strategy space and thus agents' strategies are correlated enough so that they can coordinate, but not so much that herding effects dominate. This is the sweet spot where the system self-organizes, reducing the volatility.
 \end{itemize}
 
 \begin{figure}[H]
@@ -210,14 +211,14 @@ Volatility is not the only quantity of interest in the Minority Game. We are als
     \theta^2 = \frac{1}{2^M} \sum_{\mu \in \{0, 1\}^M} \langle \textnormal{sign}A|\mu \rangle^2
 \end{equation}
 
-When the system is perfectly unpredictable, then $\forall \mu\in \{ 0,1\}^M \ \langle \textnormal{sign}A|\mu \rangle = 0$ i.e. knowing the past $M$ actions of the population does not help in predicting the next action of the population. On the other hand, if there are some states $\mu$ which lead to a biased outcome of the population, then $\langle \textnormal{sign}A|\mu \rangle \neq 0$ and the system has some degree of predictability. We thus have $\theta^2=0$ for fully unpredictable system and $\theta^2=1$ for a perfectly predictable system.
+When the system is perfectly unpredictable, then $\forall \mu\in \{ 0,1\}^M \ \langle \textnormal{sign}A|\mu \rangle = 0$ i.e. knowing the past $M$ actions of the population does not help in predicting the next action of the population. On the other hand, if there are some states $\mu$ which lead to a biased outcome of the population, then $\exists \mu \ \langle \textnormal{sign}A|\mu \rangle \neq 0$ and the system has some degree of predictability. We thus have $\theta^2=0$ for fully unpredictable system and $\theta^2=1$ for a perfectly predictable system.
 
 Again, deriving $\theta^2$ analytically is a hard problem, and we will use numerical simulations instead to study the link between $\alpha$ and the predictability of the system. The results are presented in Figure \ref{fig:predictability} where we plot the predictability $\theta^2$ of the system as a function of $\alpha$ in log scale. Here the phase transition at $\alpha_c$ is even more striking than for volatility. We observe the following two regimes:
 \begin{itemize}
     \item For $\alpha < \alpha_c$, the system is unpredictable, meaning that the agents are consuming all the available information and as such there is no information left to predict the attendance.
-    \item For $\alpha > \alpha_c$, $\theta^2$ increases with $\alpha$ and seems to plateau around $\theta^2 \simeq 0.4$ although this would need more data to be confirmed. In this case, there aren't enough agents relative to the strategy space and as such agents are not consuming all the available information. This means that there is some information left to predict the attendance, which explains the increase in predictability.
+    \item For $\alpha > \alpha_c$, $\theta^2$ increases with $\alpha$ and seems to plateau around $\theta^2 \simeq 0.4$ (though this would need more data to be confirmed). In this case, there aren't enough agents relative to the strategy space, implying that agents are not consuming all the available information. This means that there is some information left to predict the attendance, which explains the increase in predictability.
 \end{itemize}
-Importantly, note that although the system becomes partly predictable for $\alpha > \alpha_c$, the agents playing the game are not able to leverage this predictability to improve their performance. To understand why, imagine that for a certain game state $\mu_0$ the attendance is biased towards $+1$, i.e. $\langle \textnormal{sign}A|\mu_0 \rangle > 0$. Agents aware of this bias would want to play $-1$ to secure a win. As more agents play $-1$, the attendance would shift towards $-1$, and the anomaly disappears. This is due to the fact that each agent has an individual impact. Thus, the predictability that arises in the $\alpha > \alpha_c$ regime is due to anomalies that cannot be arbitraged away because there aren't enough agents to cover the whole strategy space, and as such there are "holes" in the system that no one is taking advantage of.
+Importantly, note that although the system becomes partly predictable for $\alpha > \alpha_c$, the agents playing the game are not able to leverage this predictability to improve their performance i.e. there is no "star player". To understand why, imagine that for a certain game state $\mu_0$ the attendance is biased towards $+1$, i.e. $\langle \textnormal{sign}A|\mu_0 \rangle > 0$. Agents will quickly remark this bias will want to play $-1$ to secure a win. As more agents play $-1$, $\langle \textnormal{sign}A|\mu_0 \rangle \searrow 0$ and the anomaly disappears: by playing the edge, the agents are effectively arbitraging away the anomaly. This is due to the crucial fact that \textit{each agent has an individual impact}. Thus, the predictability that arises in the $\alpha > \alpha_c$ regime is due to anomalies that cannot be arbitraged away because there aren't enough agents to cover the whole strategy space, and as such there are "holes" in the system that no one is taking advantage of.\footnote{If we added sufficiently many agents to the system, these "holes" would be filled and the predictability would vanish. This would amount to increasing $N$ so as to decrease $\alpha$ back to the efficient phase $\alpha < \alpha_c$.}
 
 \begin{figure}[H]
     \centering
@@ -230,24 +231,18 @@ Importantly, note that although the system becomes partly predictable for $\alph
 \section{Modelling financial markets with the Minority Game}
 \label{sec:financial-markets}
 
-In the previous section, we have seen through extensive simulations that depending on the ratio $\alpha = \frac{2^M}{N}$, the volatility $\sigma^2 / N$ and the predictability $\theta^2$ of the attendance $A(t)$ varies dramatically, with a phase transition around $\alpha_c \simeq 0.34$. We have identified two regimes for the system:
-\begin{itemize}
-    \item For $\alpha < \alpha_c$, there are too many agents relative to the strategy space, and as such agents' strategies are correlated. This leads to herding effects, resulting in excess volatility and volatility clustering. Besides, the system is unpredictable, meaning that agents are consuming all the available information.
-    \item For $\alpha > \alpha_c$, there aren't enough agents to cover the entirety of the strategy space, and thus agents can hardly self-organize and rather resemble independent agents flipping coins. This leads to a volatility which is about the same as the baseline volatility, thought slightly lower since agents can somewhat coordinate. Additionally, the system becomes partly predictable because there aren't enough agents to consume all the information of the signal $\mu$ ; another way to to put it is that the strategy space isn't fully covered and as such some anomalies can go unexploited.
-\end{itemize}
-
 Given its complex volatility and predictability dynamics, it is not surprising that the Minority Game has been used to model financial markets \cite{Challet_2004}. Indeed, one can view financial markets as a collection of agents, each trying to predict the future price of an asset based on past data and using their own strategies. One can then reconsider the two identified regimes in the context of financial markets:
 \begin{itemize}
     \item $\alpha < \alpha_c$ is the \textit{efficient phase} of the market, where future prices cannot be predicted and agents are correlated, leading to well-known stylized facts in the price process such as excess volatility and volatility clustering.
     \item $\alpha > \alpha_c$ is the \textit{inefficient phase} of the market, where future prices can be predicted to some extent.
 \end{itemize}
-Assuming the Minority Game is an acceptable first order approximation of financial markets, one may naturally wonder what value of $\alpha$ is most realistic.
+Assuming the Minority Game is an acceptable first order approximation of financial markets, one may naturally wonder what value of $\alpha$ is most realistic to describe them.
 
-To answer this question, one first remark is that markets must be in the efficient phase almost all the time, because as soon as they become even slightly predictable, traders will quickly step in and arbitrage away these anomalies. This can be interpreted as an increase in the number of agents $N$ leading to a decrease of $\alpha$ back in the efficient phase $\alpha < \alpha_c$.
+To begin with, a key observation is that financial markets must remain in the efficient phase almost all the time, because as soon as they become even slightly predictable, traders will quickly step in and arbitrage away these anomalies. Arbitrageurs entering the market to correct anomalies can be interpreted in the Minority Game as an increase in the number of agents $N$ to bring the inefficient $\alpha > \alpha_c$ back to the efficient phase $\alpha < \alpha_c$.
 
-However, going too deep into the efficient phase i.e. $\alpha \ll \alpha_c$ is also not desirable. Indeed, in this regime markets are too unstable, prompting traders to exit the market. This can be interpreted as a decrease in the number of agents $N$ leading to an increase of $\alpha$ closer to the critical value $\alpha_c$.
+However, going too deep into the efficient phase i.e. $\alpha \ll \alpha_c$ is also not desirable. Indeed, in this regime markets are too volatile, prompting traders to exit the market. This can be recast in the Minority Game as a decrease in the number of agents $N$ to bring $\alpha$ closer to the critical value $\alpha_c$.
 
-As such, it seems logical that markets function near the critical value $\alpha_c$, where they are efficient enough to prevent mostly everyone to profit from them, but still present anomalous behaviors which can be exploited by the best traders. In this sense, financial markets exhibit self-organized criticality, a concept introduced by Bak, Tang and Wiesenfeld \cite{Bak_1987} to describe systems that naturally evolve towards a critical state where small perturbations can lead to large-scale events. In the context of financial markets, these large scale events are all the stylized facts we observe in the price process, such as volatility clustering, fat tails, long-range correlations, and crashes.
+As such, it seems logical that markets function near the critical value $\alpha_c$, where they are efficient enough to prevent mostly everyone to profit from them, but still offer subtle anomalous behaviors which can be exploited by the best traders. In this sense, financial markets exhibit self-organized criticality, a concept introduced by Bak, Tang and Wiesenfeld \cite{Bak_1987} to describe systems that naturally evolve towards a critical state where small perturbations can lead to large-scale events. In the context of financial markets, these large scale events are all the stylized facts we observe in the price process, such as volatility clustering, fat tails and crashes.
 
 
 \bibliography{refs} % Entries are in the refs.bib file
