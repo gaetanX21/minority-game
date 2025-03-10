@@ -1,3 +1,12 @@
+"""
+Module containing the models for the Minority Game.
+The models are implemented using the Mesa framework.
+The models are:
+- Classic Minority Game
+- Markovian Minority Game
+- Grand Canonical Minority Game
+"""
+
 import mesa
 import numpy as np
 import agents

@@ -1,3 +1,8 @@
+"""
+Script to run mesa simulations in batch from the command line.
+Called "markovian" because we simulate the Markovian version of the Minority Game for faster simulations. (and nearly identical results)
+"""
+
 import models
 import mesa
 import pandas as pd
@@ -14,8 +19,7 @@ args = parser.parse_args()
 
 def get_n_range(M, num, alpha_min, alpha_max):
     """
-    Get a range of odd N values for a given M, such that the range is logarithmically spaced
-    and yields alpha values from alpha_min to alpha_max.
+    Get a range of odd N values for a given M, such that the range is logarithmically spaced and yields alpha values from alpha_min to alpha_max.
     """
     N_min, N_max = 2**M / alpha_max, 2**M / alpha_min
     N_min = max(11, N_min)

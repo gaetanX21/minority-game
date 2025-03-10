@@ -1,3 +1,13 @@
+"""
+Module containing the agents for the Minority Game.
+The agents are implemented using the Mesa framework.
+The agents are:
+- BasicAgent: classic Minority Game agent
+- MarkovianAgent: Markovian Minority Game agent
+- Producer: Producer Minority Game agent
+- Speculator: Speculator Minority Game agent
+"""
+
 import mesa
 import numpy as np
 

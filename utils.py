@@ -1,12 +1,14 @@
+"""
+Util functions for computing and plotting the volatility and the predictability of the attendance from the dataframes obtained with the simulations.
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import scienceplots
 
-FIGSIZE = (6, 4) # in inches, single column
+FIGSIZE = (6, 4)
 DPI = 200
-# Use PGF backend for LaTeX styling
-plt.style.use(['science', 'no-latex'])  # Use 'science' with or without LaTeX
+plt.style.use(['science', 'no-latex']) # science style for the figures
 
 
 def plot_attendance(df: pd.DataFrame, window: int=None, ax=None) -> None:
@@ -49,16 +51,6 @@ def plot_full_attendance(df: pd.DataFrame, window: int=100) -> None:
     ax[1] = plot_var_attendance(df, window=window, ax=ax[1])
     fig.tight_layout()
     return fig
-
-
-# def compute_volatility(M: int) -> pd.DataFrame:
-#     df = pd.read_pickle(f'data/df_M{M}.pkl')
-#     df = df[df["Step"]>1500]
-#     out = df.groupby(["M", "N", "iteration"])["Attendance"].apply(lambda x: (x**2).mean()).reset_index(name="sigma2")
-#     out = out.groupby(["M", "N"])["sigma2"].mean().reset_index(name="sigma2") # average over the iterations
-#     out["alpha"] = 2**out["M"] / out["N"]
-#     out["sigma2/N"] = out["sigma2"] / out["N"]
-#     return out
 
 
 def compute_volatility(M: int) -> pd.DataFrame:
